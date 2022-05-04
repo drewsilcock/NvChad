@@ -1,4 +1,11 @@
- local colors = require("colors").get()
+local present, feline = pcall(require, "feline")
+
+if not present then
+   return
+end
+
+local colors = require("base16").get_colors("base_30")
+
 local lsp = require "feline.providers.lsp"
 local lsp_severity = vim.diagnostic.severity
 
@@ -43,14 +50,8 @@ local icon_styles = {
    },
 }
 
-local config = require("core.utils").load_config().plugins.options.statusline
-
--- statusline style
-local user_statusline_style = config.style
-local statusline_style = icon_styles[user_statusline_style]
-
--- show short statusline on small screens
-local shortline = config.shortline == false and true
+local separator = require("core.utils").load_config().plugins.options.statusline.separator_style
+local separator_style = icon_styles[separator]
 
 -- Initialize the components table
 local components = {
@@ -58,17 +59,20 @@ local components = {
 }
 
 local main_icon = {
-   provider = statusline_style.main_icon,
+   provider = separator_style.main_icon,
 
    hl = {
       fg = colors.statusline_bg,
       bg = colors.nord_blue,
    },
 
-   right_sep = { str = statusline_style.right, hl = {
-      fg = colors.nord_blue,
-      bg = colors.lightbg,
-   } },
+   right_sep = {
+      str = separator_style.right,
+      hl = {
+         fg = colors.nord_blue,
+         bg = colors.lightbg,
+      },
+   },
 }
 
 local file_name = {
@@ -82,15 +86,15 @@ local file_name = {
       end
       return " " .. icon .. " " .. filename .. " "
    end,
-   enabled = shortline or function(winid)
-      return vim.api.nvim_win_get_width(tonumber(winid) or 0) > 70
-   end,
    hl = {
       fg = colors.white,
       bg = colors.lightbg,
    },
 
-   right_sep = { str = statusline_style.right, hl = { fg = colors.lightbg, bg = colors.lightbg2 } },
+   right_sep = {
+      str = separator_style.right,
+      hl = { fg = colors.lightbg, bg = colors.lightbg2 },
+   },
 }
 
 local dir_name = {
@@ -99,16 +103,12 @@ local dir_name = {
       return "  " .. dir_name .. " "
    end,
 
-   enabled = shortline or function(winid)
-      return vim.api.nvim_win_get_width(tonumber(winid) or 0) > 80
-   end,
-
    hl = {
       fg = colors.grey_fg2,
       bg = colors.lightbg2,
    },
    right_sep = {
-      str = statusline_style.right,
+      str = separator_style.right,
       hi = {
          fg = colors.lightbg2,
          bg = colors.statusline_bg,
@@ -132,7 +132,7 @@ local diff = {
          fg = colors.grey_fg2,
          bg = colors.statusline_bg,
       },
-      icon = "   ",
+      icon = "  ",
    },
 
    remove = {
@@ -147,9 +147,6 @@ local diff = {
 
 local git_branch = {
    provider = "git_branch",
-   enabled = shortline or function(winid)
-      return vim.api.nvim_win_get_width(tonumber(winid) or 0) > 70
-   end,
    hl = {
       fg = colors.grey_fg2,
       bg = colors.statusline_bg,
@@ -158,7 +155,7 @@ local git_branch = {
 }
 
 local diagnostic = {
-   errors = {
+   error = {
       provider = "diagnostic_errors",
       enabled = function()
          return lsp.diagnostics_exist(lsp_severity.ERROR)
@@ -228,9 +225,6 @@ local lsp_progress = {
 
       return ""
    end,
-   enabled = shortline or function(winid)
-      return vim.api.nvim_win_get_width(tonumber(winid) or 0) > 80
-   end,
    hl = { fg = colors.green },
 }
 
@@ -241,9 +235,6 @@ local lsp_icon = {
       else
          return ""
       end
-   end,
-   enabled = shortline or function(winid)
-      return vim.api.nvim_win_get_width(tonumber(winid) or 0) > 70
    end,
    hl = { fg = colors.grey_fg2, bg = colors.statusline_bg },
 }
@@ -279,7 +270,7 @@ local chad_mode_hl = function()
 end
 
 local empty_space = {
-   provider = " " .. statusline_style.left,
+   provider = " " .. separator_style.left,
    hl = {
       fg = colors.one_bg2,
       bg = colors.statusline_bg,
@@ -288,7 +279,7 @@ local empty_space = {
 
 -- this matches the vi mode color
 local empty_spaceColored = {
-   provider = statusline_style.left,
+   provider = separator_style.left,
    hl = function()
       return {
          fg = mode_colors[vim.fn.mode()][2],
@@ -298,7 +289,7 @@ local empty_spaceColored = {
 }
 
 local mode_icon = {
-   provider = statusline_style.vi_mode_icon,
+   provider = separator_style.vi_mode_icon,
    hl = function()
       return {
          fg = colors.statusline_bg,
@@ -315,10 +306,7 @@ local empty_space2 = {
 }
 
 local separator_right = {
-   provider = statusline_style.left,
-   enabled = shortline or function(winid)
-      return vim.api.nvim_win_get_width(tonumber(winid) or 0) > 90
-   end,
+   provider = separator_style.left,
    hl = {
       fg = colors.grey,
       bg = colors.one_bg,
@@ -326,10 +314,7 @@ local separator_right = {
 }
 
 local separator_right2 = {
-   provider = statusline_style.left,
-   enabled = shortline or function(winid)
-      return vim.api.nvim_win_get_width(tonumber(winid) or 0) > 90
-   end,
+   provider = separator_style.left,
    hl = {
       fg = colors.green,
       bg = colors.grey,
@@ -337,10 +322,7 @@ local separator_right2 = {
 }
 
 local position_icon = {
-   provider = statusline_style.position_icon,
-   enabled = shortline or function(winid)
-      return vim.api.nvim_win_get_width(tonumber(winid) or 0) > 90
-   end,
+   provider = separator_style.position_icon,
    hl = {
       fg = colors.black,
       bg = colors.green,
@@ -359,10 +341,6 @@ local current_line = {
       end
       local result, _ = math.modf((current_line / total_line) * 100)
       return " " .. result .. "%% "
-   end,
-
-   enabled = shortline or function(winid)
-      return vim.api.nvim_win_get_width(tonumber(winid) or 0) > 90
    end,
 
    hl = {
@@ -410,7 +388,7 @@ components.active[1] = left
 components.active[2] = middle
 components.active[3] = right
 
-require("feline").setup {
+feline.setup {
    theme = {
       bg = colors.statusline_bg,
       fg = colors.fg,
