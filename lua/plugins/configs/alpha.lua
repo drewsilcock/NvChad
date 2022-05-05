@@ -60,7 +60,7 @@ options.header = {
 options.buttons = {
    type = "group",
    val = {
-      button("SPC f f", "  Find File  ", ":Telescope find_files<CR>"),
+      button("SPC f f", "  Find File  ", ":Telescope find_files<CR>"),
       button("SPC f o", "  Recent File  ", ":Telescope oldfiles<CR>"),
       button("SPC f w", "  Find Word  ", ":Telescope live_grep<CR>"),
       button("SPC b m", "  Bookmarks  ", ":Telescope marks<CR>"),
