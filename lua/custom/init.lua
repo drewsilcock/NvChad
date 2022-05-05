@@ -1,9 +1,3 @@
-local customPlugins = require "core.customPlugins"
-
-customPlugins.add(function(use)
-  use "wakatime/vim-wakatime"
-end)
-
 local g = vim.g
 
 g.nvim_tree_add_trailing = 1 -- append a trailing slash to folder names

@@ -16,8 +16,10 @@ M = {
   },
 
   plugins = {
-    status = {
-      dashboard = true,
+    user = {
+      ["goolord/alpha-nvim"] = {
+        disable = false,
+      },
     },
   },
 }
