@@ -4,7 +4,7 @@ if not present then
    return
 end
 
-telescope.setup {
+local options = {
    defaults = {
       vimgrep_arguments = {
          "rg",
@@ -53,6 +53,11 @@ telescope.setup {
    },
 }
 
+-- check for any override
+options = require("core.utils").load_override(options, "nvim-telescope/telescope.nvim")
+telescope.setup(options)
+
+-- load extensions
 local extensions = { "themes", "terms" }
 
 pcall(function()
