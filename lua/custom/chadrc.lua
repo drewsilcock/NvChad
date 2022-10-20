@@ -16,11 +16,13 @@ M = {
   },
 
   plugins = {
-    user = {
-      ["goolord/alpha-nvim"] = {
-        disable = false,
-      },
-    },
+    user = require "custom.plugins",
+
+    options = {
+      lspconfig = {
+        setup_lspconf = "custom.lspconfig"
+      }
+    }
   },
 }
 

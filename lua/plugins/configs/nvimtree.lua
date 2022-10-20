@@ -8,9 +8,10 @@ local options = {
    filters = {
       dotfiles = false,
       exclude = { "custom" },
+      custom = { ".git", "node_modules", ".cache", ".mypy_cache", ".venv", ".DS_Store" },
    },
-   disable_netrw = true,
-   hijack_netrw = true,
+   disable_netrw = false,
+   hijack_netrw = false,
    ignore_ft_on_setup = { "alpha" },
    open_on_tab = false,
    hijack_cursor = true,
@@ -27,7 +28,7 @@ local options = {
    },
    git = {
       enable = false,
-      ignore = true,
+      ignore = false,
    },
    actions = {
       open_file = {
@@ -35,6 +36,7 @@ local options = {
       },
    },
    renderer = {
+      add_trailing = true,
       highlight_git = false,
       highlight_opened_files = "none",
 
